@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <fcntl.h>   // For open
+#include <unistd.h>  // For read, write, close, unlink
+#include <string.h>
+
+int main() {
+    int fd;
+    char filename[20], buffer[100];
+    int choice;
+
+    printf("Enter file name: ");
+    scanf("%s", filename);
+
+    do {
+        printf("\n--- UNIX File Management ---\n");
+        printf("1. Create and Write File\n");
+        printf("2. Read File\n");
+        printf("3. Append to File\n");
+        printf("4. Delete File\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1:
+                fd = open(filename, O_CREAT | O_WRONLY, 0644); // Create file
+                if(fd < 0) {
+                    perror("Error creating file");
+                    break;
+                }
+                printf("Enter text to write: ");
+                getchar(); // Clear buffer
+                fgets(buffer, sizeof(buffer), stdin);
+                write(fd, buffer, strlen(buffer));
+                close(fd);
+                printf("File written successfully.\n");
+                break;
+
+            case 2:
+                fd = open(filename, O_RDONLY);
+                if(fd < 0) {
+                    perror("Error opening file");
+                    break;
+                }
+                printf("File content:\n");
+                int n;
+                while((n = read(fd, buffer, sizeof(buffer)-1)) > 0) {
+                    buffer[n] = '\0';
+                    printf("%s", buffer);
+                }
+                close(fd);
+                break;
+
+            case 3:
+                fd = open(filename, O_WRONLY | O_APPEND);
+                if(fd < 0) {
+                    perror("Error opening file");
+                    break;
+                }
+                printf("Enter text to append: ");
+                getchar();
+                fgets(buffer, sizeof(buffer), stdin);
+                write(fd, buffer, strlen(buffer));
+                close(fd);
+                printf("Text appended successfully.\n");
+                break;
+
+            case 4:
+                if(unlink(filename) == 0)
+                    printf("File deleted successfully.\n");
+                else
+                    perror("Error deleting file");
+                break;
+
+            case 5:
+                printf("Exiting...\n");
+                break;
+
+            default:
+                printf("Invalid choice\n");
+        }
+    } while(choice != 5);
+
+    return 0;
+}
