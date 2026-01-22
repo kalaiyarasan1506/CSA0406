@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+
+pthread_mutex_t lock;
+int shared = 0;   // Shared resource
+
+void* process(void* arg) {
+    int id = *(int*)arg;
+
+    pthread_mutex_lock(&lock);   // Enter critical section
+
+    printf("Process %d entered critical section\n", id);
+    shared++;
+    printf("Shared value = %d\n", shared);
+    sleep(1);
+
+    printf("Process %d leaving critical section\n", id);
+
+    pthread_mutex_unlock(&lock); // Exit critical section
+    return NULL;
+}
+
+int main() {
+    pthread_t t1, t2;
+    int id1 = 1, id2 = 2;
+
+    pthread_mutex_init(&lock, NULL);
+
+    pthread_create(&t1, NULL, process, &id1);
+    pthread_create(&t2, NULL, process, &id2);
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    pthread_mutex_destroy(&lock);
+
+    printf("Final value of shared variable = %d\n", shared);
+
+    return 0;
+}
