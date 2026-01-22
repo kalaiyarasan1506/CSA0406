@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_USERS 10
+#define MAX_FILES 10
+
+struct file {
+    char fname[20];
+};
+
+struct user {
+    char uname[20];
+    struct file files[MAX_FILES];
+    int fcount;
+};
+
+int main() {
+    struct user users[MAX_USERS];
+    int ucount = 0;
+    int choice;
+    char uname[20], fname[20];
+    int i, j;
+
+    do {
+        printf("\n--- Two Level Directory ---\n");
+        printf("1. Create User\n");
+        printf("2. Create File\n");
+        printf("3. Display Directory\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+
+        case 1:
+            printf("Enter user name: ");
+            scanf("%s", users[ucount].uname);
+            users[ucount].fcount = 0;
+            ucount++;
+            printf("User created successfully\n");
+            break;
+
+        case 2:
+            printf("Enter user name: ");
+            scanf("%s", uname);
+
+            for (i = 0; i < ucount; i++) {
+                if (strcmp(uname, users[i].uname) == 0) {
+                    printf("Enter file name: ");
+                    scanf("%s", fname);
+                    strcpy(users[i].files[users[i].fcount].fname, fname);
+                    users[i].fcount++;
+                    printf("File created successfully\n");
+                    break;
+                }
+            }
+            if (i == ucount)
+                printf("User not found\n");
+            break;
+
+        case 3:
+            printf("\nDirectory Structure:\n");
+            for (i = 0; i < ucount; i++) {
+                printf("\nUser: %s\n", users[i].uname);
+                for (j = 0; j < users[i].fcount; j++)
+                    printf("  %s\n", users[i].files[j].fname);
+            }
+            break;
+
+        case 4:
+            printf("Exiting...\n");
+            break;
+
+        default:
+            printf("Invalid choice\n");
+        }
+    } while (choice != 4);
+
+    return 0;
+}
