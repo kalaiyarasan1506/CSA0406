@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main()
+{
+    int fd;
+    char buf[50];
+
+    /* Create & Write */
+    fd = open("file.txt", O_CREAT | O_WRONLY, 0644);
+    write(fd, "File Management in UNIX\n", 24);
+    close(fd);
+
+    /* Read */
+    fd = open("file.txt", O_RDONLY);
+    read(fd, buf, sizeof(buf));
+    printf("File Content:\n%s", buf);
+    close(fd);
+
+    /* Append */
+    fd = open("file.txt", O_WRONLY | O_APPEND);
+    write(fd, "Appending data\n", 15);
+    close(fd);
+
+    /* Delete */
+    unlink("file.txt");
+    printf("\nFile deleted successfully\n");
+
+    return 0;
+}
