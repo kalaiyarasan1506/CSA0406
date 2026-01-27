@@ -1,0 +1,33 @@
+#include <stdio.h>
+
+int main() {
+    int indexBlock[20], fileBlocks[20];
+    int n, i, block;
+
+    printf("Enter number of blocks in the file: ");
+    scanf("%d", &n);
+
+    printf("Enter disk block numbers allocated to the file:\n");
+    for (i = 0; i < n; i++) {
+        scanf("%d", &fileBlocks[i]);
+        indexBlock[i] = fileBlocks[i];   // index block stores pointers
+    }
+
+    printf("\nIndex Block Contents:\n");
+    for (i = 0; i < n; i++) {
+        printf("Index %d -> Block %d\n", i, indexBlock[i]);
+    }
+
+    printf("\nEnter file block number to access (0 to %d): ", n - 1);
+    scanf("%d", &block);
+
+    if (block < 0 || block >= n) {
+        printf("Invalid block number\n");
+        return 0;
+    }
+
+    printf("Block %d is stored at disk location %d\n",
+           block, indexBlock[block]);
+
+    return 0;
+}
